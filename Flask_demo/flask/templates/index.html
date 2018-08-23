@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body{
+            background-image: url(http://pic1.win4000.com/wallpaper/2018-08-03/5b63c9465eb4a.jpg);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        #d{
+            width:253px;
+            height: 250px;
+            border:1px solid white;
+            margin: 0 auto;
+        }
+        #f{
+            line-height: 25px;
+            margin: 10%;
+        }
+        #l{
+            width:1300px;
+            border:1px solid black;
+        }
+        #r{
+            width:1305px;
+            align-items: center;
+            margin: 0 auto;
+            background-color: aliceblue;
+            opacity: 0.85;
+        }
+    </style>
+</head>
+<body>
+<div id="r">
+<div id="d"><form method="POST" id="f">
+    年:&nbsp&nbsp{{ form.year }}<br/>
+    月:&nbsp&nbsp{{ form.month }}<br/>
+    日:&nbsp&nbsp{{ form.day }}<br/>
+    时:&nbsp&nbsp{{ form.hour }}<br/>
+    分:&nbsp&nbsp{{ form.min }}<br/>
+    <input type="submit" value="提交">
+    <input type="reset" value="重置">
+</form></div>
+<div id="l">{% if data %}
+        {% if data == "no" %}
+            <h3>没有查到数据</h3>
+        {% else %}
+            {% for d in data %}
+                <div style="border:1px solid black;text-indent: 1em;">{% for x in d %}
+                <h5>{{ x }}</h5>
+                {% endfor %}</div>
+            {% endfor %}
+        {% endif %}
+    {% endif %}</div>
+</div>
+</body>
+</html>

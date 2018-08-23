@@ -1,0 +1,138 @@
+
+
+最简单的flask项目
+from flask import Flask
+app = Flask(__name__)
+@app.route('/')					#flask对斜线很严格，修饰器中定义的URL最后如果有斜线的话，用户可以忽略此斜线，但是如果URL最后没有定义斜线，而用户又加上此斜线的话就会报404
+def hello_world():
+    return 'Hello World!'
+if __name__ == '__main__':
+    app.run()
+
+项目结构：
+staic		#存放静态文件，如CSS文件，js文件
+templates	#存放模板文件，html文件
+venv		#存放程序文件
+
+
+
+
+设定flask的监听地址
+app.run(host='0.0.0.0')			#这会让flask监听所有IP地址
+app.debug = True				#开启flask的调试模式，或者使用app.run(debug=True)开启调试模式
+
+URL传递变量
+@app.route('/user/<id>')		#id将可以用来作为传入函数的变量来调用
+@app.route('/user/<int:id>')	#传入类型为整数的变量
+@app.route('/user/<float:id>')	#传入类型为浮点数的变量
+@app.route('/user/<path:id>')	#传入类型为字符型，也可以接受斜线
+
+=================================================================================================================
+url_for 构造url
+例：
+app = Flask(__name__)
+@app.route('/')
+def index():
+    pass
+@app.route('/login')
+def LOGIN():
+    pass
+with app.test_request_context():
+    print(url_for('index',_external=True))			#将会打印出完整的url，index是函数名，不是修饰器中的url
+    print(url_for('LOGIN',_external=True))			#如果去掉_external=True将不会打印出完整的url，会只打印目录
+=================================================================================================================
+app = Flask(__name__)
+@app.route('/')
+def index():
+    return url_for('LOGIN',user='aming')		#访问网站主页将会返回LOGIN函数对应的url
+@app.route('/login/<user>')
+def LOGIN(user):
+    return user
+
+可在html中这么写：
+<a href="{}{url_for('login',user='aming')}">测试</a>	#此时点击"测试"将会跳转到login链接函数中并且传递user变量
+=================================================================================================================
+templates模板
+例：
+from flask import Flask,render_template
+app = Flask(__name__)
+@app.route('/')
+def index():
+    return 'index'
+@app.route('/login/')
+def LOGIN():
+    name = 'mingge'										#定义变量
+    return render_template('test.html',name=name)		#调用templates目录下的test.html模板，并且给html文件传入变量name，此变量可在程序内定义，也可在修饰器的url中定义
+
+Jinjia模板文件引入变量使用if判断：
+{% if name %}						#{% %}用来引入语法，如if，while，for等
+    <h1>hello {{ name }}</h1>		#{{}}双括号中用于调用外部程序引入的变量
+{% else %}
+    <h1>hello world</h1>
+{% endif %}							#if语法需要以此表示结尾
+
+Jinjia模板使用for：
+{% for i in name %}					#语法格式和python一样，只是需要endfor来结尾
+    <h1>hello {{ i }}</h1>
+{% endfor %}
+=================================================================================================================
+表单提交
+Html例：
+<form method="POST">														#指定提交方式
+        <input type="text" name="username" placeholder="username">			#插入input输入框，定义为username
+        <input type="password" name="password" placeholder="password">		#插入input输入框，定义为password
+        <input type="submit" value="Submit">								#插入按钮，type=submit代表这是提交按钮
+        <input type="reset" value="reset">									#type=reset代表这是重置按钮
+    </form>
+Flask例：
+@app.route('/',methods=['GET','POST'])
+def index():
+    if request.method == 'POST':											#判断提交方式是否是POST，request代表用户通过html文件反馈给程序的内容
+        username = request.form['username']									#获取html文件中定义的字段username
+        password = request.form['password']									#获取html文件中定义的字段password
+        if username == "user" and password == "password":					#判读用户密码是否正确
+            return redirect("http://www.baidu.com")							#正确则使用redirect跳转至指定页面
+        else:																#否则
+            return render_template('test2.html', name='0')					#反馈错误页面
+    return render_template('test.html')										#如果用户只进入此页面不提交表单，则不会出发if分支，程序只会反馈test.html文件给用户，如果用户点击submit提交则出发if分支判断提交方式和提交内容
+
+第二种办法：
+html例:
+<form method="POST">														#指定提交方式
+        username:{{form.username}}											#此方式去掉了input标签
+        password:{{form.password}}											#
+        <input type="submit" value="Submit">								#插入按钮
+        <input type="reset" value="reset">
+    </form>
+Flask例：
+from flask import Flask,request,render_template,redirect												#导入各模块
+app = Flask(__name__)																					#定义APP
+from wtforms import Form,TextField,PasswordField,validators												#导入wtforms，所有自定义的表单都要继承From类，由此类去关联html中的from
+class LoginForm(Form):																					#定义表单，继承Form类
+    username = TextField("username",[validators.Required()])											#重写字段，一系列的Field对应html的input标签控件
+    password = PasswordField("password",[validators.Required()])										#validators是验证器,用于验证用户输入的数据.[validators.Required()]表明这个值必须要输入
+@app.route("/user",methods=['GET','POST'])
+def login():
+    myForm = LoginForm(request.form)																	#获取由Form类关联下来的from
+    if request.method =='POST':
+        if myForm.username.data =="user" and myForm.password.data=="password" and myForm.validate():	#myForm.password.data用于获取用户输入的密码,这里验证中多了myForm.validate()
+            return redirect("http://www.baidu.com")
+        else:
+            message = "Failed Login"
+            return render_template('login1.html',message=message,form=myForm)
+    return render_template('login1.html',form=myForm)
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
