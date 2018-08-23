@@ -1,0 +1,107 @@
+
+JavaScript
+
+脚本语言，逐条执行，对大小写是敏感的，可忽略空格
+和Python一样，一切皆对象，各自都有各自的属性和方法
+H5默认支持的语言
+纯文本可用反斜杠\换行，但代码不可以
+两个斜杠//则为注释行，可以行末注释，也可使用 /* 多行注释 */
+
+
+
+
+输出html文本，如果在文档已完成加载后执行 document.write，整个 HTML 页面将被覆盖，所以不可放在最后执行
+document.write("<h1>This is a heading</h1>");
+
+js函数，类似python函数
+function button() {										#大括号内是{代码块}，每行代码都要用分号结尾，传递参数的方式和python一样 button(can1,can2)，返回值的方法和python也一样，return
+    document.write('<h1>按钮被点击</h1>')
+}
+<button type="button" onclick="button()">点击</button>	#这是一个按钮，点击触发button()函数
+
+使用外部js文件
+flask可将js文件存放在static目录下，使用<script src="../static/test.js"></script>
+
+通过id改变标签属性
+<script>
+	function button() {													#定义操作函数，用于改变文字颜色
+		res=document.getElementById("d1").style="color:red";			#此操作用于更改标签的style属性
+#		res=document.getElementById("d1").innerHTML="点过了";			#此操作用于更改标签内的文字
+	}
+</script>
+
+<button type="button" onclick="button()">点击</button>					#定义按钮
+<div style="color: #36b239;" id="d1">									#定义默认文字颜色
+	<h1>变色</h1>
+</div>
+
+定义变量：
+函数内的局部变量会在函数运行完之后删除，函数外的全局变量将会在关闭页面后删除
+js的数据类型：字符串、数字、布尔(true\false)、数组、对象、Null(用来清空变量的值)、Undefined(空)
+var test;				#声明一个变量，此时它的值为空，其值实际上是 undefined，必须使用var来声明变量，如果给没有事先声明的变量赋值，则此变量自动声明为全局变量，即使在函数内执行也一样
+test=66;				#赋值，赋值时可以不加var，赋过值的变量再次使用var声明的话并不会丢掉原来的值，除非重新定义变量的值，否则变量的值一直不会丢
+var a=5;				#也可以在声明变量的同时赋值，需要以分号;结尾，如果使用单双引号把值引起来的话，js会当作字符串来处理
+var tt=1,ss=2,dd="df";	#可以同时声明多个变量，用逗号隔开
+var tt=1,				#声明变量可跨行，末尾需要是逗号才行
+ss=2,
+dd="df";
+var xin=new String;		#声明变量可以不指定具体的值仅指定值的类型，比如String字符，Number数字，Boolean布尔，Array列表，Object字典
+var s=a+2;				#可以像Python一样进行运算
+var res = 123e5;		#其值为1230000，e5的意思是声明前一个数字是在小数点第前几位，此处e5则说明3在小数点前第5位
+var ced = 123e-5;		#其值为0.00123，e-5的意思是声明前一个数字是在小数点第后几位，此处e5则说明3在小数点后第5位
+var person={firstname:"Bill", lastname:"Gates", id:5566};	#对象，和python的字典类似，包含键值对，寻址方式有两种：persion.firstname 和 persion["lastname"]
+
+变量的属性和方法：
+var txt = "nihao chenxiansheng";	#此变量的值为"nihao chenxiansheng"，此外还包括若干属性，比如：
+txt.length;							# length属性是指txt变量值的长度
+txt.indexOf();						#返回某个指定的字符串值在字符串中首次出现的位置，
+									#使用方法txt.indexOf(value,index)，value为检索的内容，index代表从那个索引开始查
+									#如txt.indexOf("a",5)，从索引5开始往后查字符a首次出现的位置是哪里，返回的是索引号
+txt.search();						#此方法为查找
+									#txt.search(/nihao/) 在变量txt的值中查找nihao，为真则返回0，否则返回非0
+txt.replace();						#此方法为查找替换
+									#txt.replace(/oldcode/,"newcode")，将会把查找到的旧字符换成新的字符，前旧后新，新值用双引号加逗号隔开，此例用于局部替换
+									#txt.replace(/oldcode/g,"newcode")，加g将全局替换
+									#txt.replace(/(\w+)\s* \s*(\w+)/, "$2 $1") 次例将"nihao chenxiansheng"替换成"chenxiansheng nihao"，检索字段并以空格分隔，使用$1 $2引用两个字符串
+									#如果括号里为空则获取到变量值，如果只指定了查找字段不指定要替换成的新字段，则将查找到的字段替换为空Undefined
+给对象添加属性：
+var txt = "mingge";					#声明变量并赋值，此变量是一个对象
+txt.age = 18;						#给对象添加age属性，明哥18岁，重新指定属性值则覆盖掉旧值
+txt.like = "game";					#明哥喜欢游戏
+									#访问方式：txt.like，txt.age
+
+运算符：
+基本和Python一致，只有一个比较特殊，=== 三个等于号，用于判断两个变量的值和类型是否都相同，返回布尔值
+&&	#并且，和，and
+||	#或者，或，or
+!	#取反，不，not
+条件判断运算
+var a = "nihao"
+var custom = (a==="nihao")?"1":"2"	#判断a的类型和值是否为字符串的"nihao"，真则给变量custom赋值"1"，否则赋值"2"
+if判断
+格式：
+if (表达式)
+{操作;}
+elif
+{操作;}
+else
+{操作;}
+
+switch(n)
+{
+case 1:
+	操作;
+	break;
+case 2:
+	操作;
+	break;
+default:
+	默认操作;
+	break;
+}
+
+num = 5
+for (var i=0; i<num; i++)		#先定义一个变量用作起始编号(会在代码块运行前执行，也可事先定义好，不写在for里，则第一段为空即可，分号还是要的)，然后定义范围(代码执行的条件)，最后定义每次循环的增量值(代码执行完毕后执行)
+{document.write(i + "<br>");}
+
+for循环遍历，与Python一样

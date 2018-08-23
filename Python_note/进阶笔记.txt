@@ -1,0 +1,217 @@
+__init__ :初始化函数,如果类中包含此函数的话,在调用类的时候会自动执行里面的代码,达到初始化的效果,此函数必须包含(self)
+  (self) :初始化函数必须包含此参数,此参数代表自己
+          例如：
+          class test():
+              def __init__(self):
+                  aaa = 'A'
+                  self.ddd = 'B'
+          a = test()
+          print(a.aaa)  #此操作会出现AttributeError异常，因为aaa并不代表__init__函数中的一个变量，__init__函数是初始化操作，不包含任何全局、局部变量
+          print(a.ddd)  #此操作正常，ddd变量已由self指定为实例本身的一个变量，即test()函数的变量，可以由test函数来调用。
+                        #self的功能可以理解为将初始化过程中产生的数据使用self传给class。
+if __name__ == '__main__':
+    #__name__程序文件的名称,运行文件本身时__name__的值为__main__，若当做模块导入其他文件，运行其他文件时__name__的值为导入的模块名称
+    #作用是被当作模块导入其他文件时，其他文件调用此模块的话，if __name__ == '__main__':以下的内容是不生效的，只有运行模块本身才会生效
+========================================================================================================================
+*args的用法:用于给函数传递不定数量的参数
+    例：
+    def test(one,*outher):
+        print('第一个是:',one)
+        for i in outher:
+            print('剩下的有:',i)
+    test('123','asd','ffff','aming')
+    输出：
+        第一个是: 123
+        剩下的有: asd
+        剩下的有: ffff
+        剩下的有: aming
+    此函数将首先输出第一个参数，然后将后续所有参数交给*outher处理，依次输出所传递的参数
+========================================================================================================================
+format用法：使用{}来代替%
+    例：
+    dic = {"name":"aming"}
+    for k,v in dic.items():             #遍历一个字典，使用.items()获取到字典内所有值，赋值给k和v
+        print(k,v)                      #第一种：直接输出k和v
+        res = "%s=%s"%(k,v)             #第二中：使用%s占位，并将之后使用%(变量1,变量2)的方式传递值
+        print(res)
+        print("{0}:{1}".format(k,v))    #第三种：使用format代替%s占位,每个{}括号里都是一个字段,从0开始,此例以:分割
+    输出：
+        name aming  #第一种
+        name=aming  #第二种
+        name:aming  #第三种
+========================================================================================================================
+**kwargs用法：用于传递给函数不定数量的键值对时，在函数里处理一个带名字(key)的参数
+    例：
+    def test(**outher):
+        for key,value in outher.items():
+            print("{0}:{1}".format(key,value))
+    test(name="aming",age='21',sex='boy')
+    输出：
+        name:aming
+        age:21
+        sex:boy
+========================================================================================================================
+*args和**kwargs函数的调用：
+    我有一个函数：
+        def test_args_kwargs(arg1, arg2, arg3):
+            print("arg1:", arg1)
+            print("arg2:", arg2)
+            print("arg3:", arg3)
+    第一种：
+        test_args_kwargs(1,2,3)     #将依次输出123
+    第二种：
+        ls = ("aming",21,"boy")
+        test_args_kwargs(*args)     #将一次输出aming,21,boy
+    第三种：
+        dic = {"name":"aming","age":"21","sex":"boy"}
+        test_args_kwargs(**dic)     #将依次输出aming,21,boy
+    使用顺序：test(fargs, *args, **kwargs)，按此顺序使用
+========================================================================================================================
+调试模式：Debugging
+    使用pdb模块的set_trace方法
+    例：
+        import pdb
+        def make_bread(ite1,):
+            for i in range(ite1):
+                pdb.set_trace()
+                print(i)
+        make_bread(100)
+    调试模式的命令：
+        c: 继续执行
+        w: 显示当前正在执行的代码行的上下文信息
+        a: 打印当前函数的参数列表
+        s: 执行当前代码行，并停在第一个能停的地方（相当于单步进入）
+        n: 继续执行到当前函数的下一行，或者当前行直接返回（单步跳过
+========================================================================================================================
+生成器，迭代器：与循环相似，但是占用资源更少，一般通过函数实现，不用return，而用yield,yield 是一个类似 return 的关键字，
+迭代一次遇到yield时就返回yield后面(右边)的值。重点是：下一次迭代时，从上一次迭代遇到的yield后面的代码(下一行)开始执行。
+    例：
+        def test(n):
+            for i in range(n):
+                yield i         #使用yield为'产生'一个值，而不是写入内存中
+        gen = test(3)
+        print(next(gen))        #next()为输出当前值的下一个值，for循环的机制也是如此
+        print(next(gen))        #
+        print(next(gen))        #
+        print(next(gen))        #本例循环了四次，但是生成器只生成了三个值，所以第四个值将会产生StopIteration的异常
+                                #for循环会自动捕捉StopIteration异常并停止调用next()，所以不会出现此异常
+    再例:
+        def test():
+            yield 1
+        print(test())           #不会输出任何东西，不会占资源
+        res = test()
+        print(res)              #会输出迭代器代码
+        print(list(res))        #使用list转换后可查看原来的值
+        print(next(test()))     #将会使用next()调取生成器中yield的值，将其写入内存，以供其他操作。
+        #此例不会输出任何东西，所以只有在配合next()调用生成器时才会将next()的内容输出，for循环也是如此，本身不会占用资源
+        #只用在调用next()输出下一个值时才会将其写入内存，此时才会占资源，
+		
+========================================================================================================================
+执行时间：
+	start = time.clock()			#记录当前时间
+	** 程序主体 **					#运行程序
+	last = time.clock() - start	#当前时间 - 记录的时间
+    print(last)					#输出之间的差，也就是运行时间
+获取当前日期和时间：
+	print(time.asctime(time.localtime(time.time())))
+	print(time.strftime("%a %b %H %M %S %Y",time.localtime()))
+		i = datetime.datetime.now()
+		print ("当前的日期和时间是 %s" % i)
+		print ("ISO格式的日期和时间是 %s" % i.isoformat() )
+		print ("当前的年份是 %s" %i.year)
+		print ("当前的月份是 %s" %i.month)
+		print ("当前的日期是  %s" %i.day)
+		print ("dd/mm/yyyy 格式是  %s/%s/%s" % (i.day, i.month, i.year) )
+		print ("当前小时是 %s" %i.hour)
+		print ("当前分钟是 %s" %i.minute)
+		print ("当前秒是  %s" %i.second)
+========================================================================================================================
+新式类调用：
+	例：
+		class A(object):					#定义父类，父类继承Object类
+			def __init__(self):				#定义初始化函数
+				self.namea = "aaa"			#变量
+			def test(self):					#另一个函数
+				self.nnn = 'nnn'			#变量
+		class B(A):							#定义子类，子类继承父类
+			def __init__(self):				#定义子类的初始化函数
+				super(B, self).__init__()	#涉及到MRO算法，有点复杂，意思为使自身类引入父类的某个函数，此例为使自身B类引用父类的初始化函数，直接理解为选择引入父类的某个函数就好
+				print(self.namea)			#输出父类初始化函数中的变量
+				super(B,self).test()		#引入父类的test函数
+				print(self.nnn)				#输出父类test函数中的变量
+		B()									#执行子类B()，其中继承的父类中的函数和变量都可输出
+========================================================================================================================
+异常捕捉：
+	try:									#开始捕捉
+		os.popen('ipconfig')				#正常语句
+		print('Ok')							#输出信息
+	except Exception as e:					#捕捉到异常
+		print(e)							#输出异常信息
+	finally:								#特点是不管有无异常，都会被执行到
+		print('exit')						#输出
+
+
+========================================================================================================================
+threading多线程的Lock锁：Python的多线程是因为GIL(全局锁)的存在，在Python运行一条指令结束时会释放GIL，这时其他线程将有机会使用此锁执行函数，Python进程中只有一个线程可以处于运行状态，所以Python的多线程只是轮流使用全局锁而已
+	例:
+		import threading,time				#导入模块
+		lock = threading.Lock()				#创建锁
+		def a():							#函数1
+			lock.acquire()					#使用此锁，使用同一个锁的所有线程只能同时运行一个函数，当使用锁的线程将锁释放之后其他线程才可以使用此锁
+			for i in range(10):				#循环
+				print('a'+str(i))			#输出
+				time.sleep(0.5)				#睡眠
+			lock.release()					#释放锁，释放之后其他线程就可以使用此锁来执行函数，如果第一个函数不释放此锁，其他所有使用此锁的线程将永远无法运行，如果是最后一个函数不释放锁的话将无需释放，直接退出程序
+
+		def b():
+			lock.acquire()
+			for a in range(10):
+				print('b'+str(a))
+				time.sleep(0.5)
+			lock.release()
+		start_a = threading.Thread(target=a,)
+		start_b = threading.Thread(target=b,)
+		start_a.start()
+		start_b.start()
+	再例:此例使用多个锁，每两个函数使用一个锁，此时两个锁都会抢占GIL，每个函数都会抢占自己所使用的lock(当然此例配置了acquire获得锁，那么只有改函数释放锁之后才会被其他函数抢占该锁，执行单条指令是不会释放锁的)
+		import threading,time
+		lock = threading.Lock()						#创建锁1
+		lock_2 = threading.Lock()					#创建锁2
+		=============================================================================================================
+		def a():									#使用锁1的函数													|
+			lock.acquire()							#获得锁1														|
+			for i in range(10):																						|
+				print('a'+str(i))																					|
+				time.sleep(0.5)						#time.sleep()是阻塞的，使用需谨慎								|
+			lock.release()							#释放锁1，释放后其他使用此锁的函数将会抢走该锁					|			
+		def b():									#使用锁1的函数													|==== 此锁将与其他锁抢占GIL全局锁
+			lock.acquire()							#获得锁1，从a函数抢来											|
+			for a in range(10):																						|
+				print('b'+str(a))																					|
+				time.sleep(0.5)						#time.sleep()是阻塞的，使用需谨慎								|
+			lock.release()							#释放锁1														|
+		=============================================================================================================
+
+		=============================================================================================================
+		def c():									#使用锁2的函数													|
+			lock_2.acquire()						#获得锁2														|
+			for i in range(10):																						|
+				print('c'+str(i))																					|
+				time.sleep(0.5)						#time.sleep()是阻塞的，使用需谨慎								|
+			lock_2.release()						#释放锁2														|==== 此锁将与其他锁抢占GIL全局锁
+		def d():									#使用锁2的函数													|
+			lock_2.acquire()						#获得锁2														|
+			for a in range(10):																						|
+				print('d'+str(a))																					|
+				time.sleep(0.5)						#time.sleep()是阻塞的，使用需谨慎								|
+			lock_2.release()						#释放锁2														|
+		=============================================================================================================
+		start_a = threading.Thread(target=a,)													
+		start_b = threading.Thread(target=b,)
+		start_c = threading.Thread(target=c,)
+		start_d = threading.Thread(target=d,)
+		start_a.start()
+		start_b.start()
+		start_c.start()
+		start_d.start()
+	
