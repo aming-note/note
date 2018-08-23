@@ -1,0 +1,303 @@
+win.geometry('500x300')设置窗口大小
+win.configure(background="blue")      # 设置整个界面的背景颜艿
+win.iconbitmap('hourglass')           # 设置窗口图标
+root.overrideredirect(True)           # 隐藏标题栿
+reversed(range(100))                  # 倒序循环，从100刿0
+root.destroy()                        # 锿毁根窗口
+root.withdraw()                       # 隐藏根窗叿
+root.deiconify()                      # 显示隐藏的根窗口
+root.attributes("-alpha",0.9)		  # 设置根窗口透明，1为不透明，0为完全透明，只有根窗口可以
+root.geometry('%dx%d+%d+%d' % (700, 500, (root.winfo_screenwidth() - 700) / 2, (root.winfo_screenheight() - 700) / 2))
+									  # 设置窗口居中
+
+布局管理器：.pack()
+            .grid(row=1,column=2)     #row行，cloumn刿
+
+Label = 显示字符的控仿
+    bitmap = 'error'使用error内置图，丿下为其他可用内置囿
+        error
+        hourglass
+        info
+        questhead
+        question
+        warning
+        gray12
+        gray25
+        gray50
+        gray75
+    gif = PhotoImage(file = 'c:/123.gif') 使用PhotoImage调图片文件，只认GIF格式的文件，且图片不会动
+    Label = Label (window,image = gif)
+    Label.gif = gif
+    bitmap 丿 image 的关系，如果同时指定这两参数，image优先
+    改变Label颜色值，有前景色fg和背景色bg，可使用颜色名称和颜色忿#RRGGBB
+    Label(window,fg = 'red',bg = '#FF00FF',text = 'Tkinter').pack()
+    OS 相关的颜色忼，妿 Windows 支持＿
+    SystemActiveBorder,
+    SystemActiveCaption,
+    SystemAppWorkspace,
+    SystemBackground
+    宽度与高度：width: 宽度，height: 高度；image和位置属性不能同时使甿
+    Label = Label(window,fg = 'black',bg = '#FF00FF',width = 50,height = 20).pack()
+    图像与文本同时使用，设置图像位置：image或bitmap
+    Label = Label(window,text = '图像',compound = 'top',image = gif).pack()
+                                       compound = 'left'
+                                       compound = 'right'
+                                       compound = 'top'
+                                       compound = 'buttom'
+                                       compound = 'center'
+    控制text文本框的位置和对齐方式：
+        wraplength＿ 指定多少单位后开始换衿
+        justify: 指定多行的对齐方弿
+        ahchor＿ 指定文本(text)或图僿(bitmap/image)圿 Label 中的显示位置，如下所礿
+                    nw    n    ne
+                    w   center  e
+                    sw    s    se
+
+Button按钮＿
+    Button(window,text="Please click",relief = FLAT,command = cmd).pack()
+    Please click是按钮上的文字，relief是按钮样式，command是指定回调函数也就是点击之后的事件?
+    按钮样式：FLAT，GROOVE，RAISED，RIDGE，SOLID，SUNKEN
+    按钮也可使用Label的bitmap内置图和位置属濧来调整位置
+Entry文本输入＿
+    width=20 设置文本框长庿
+    e = StringVar()
+    entry = Entry(window,textvariable = e)
+    e.set('Press input')
+    entry.pack()
+    将变釿 e 丿 Entry 绑定，然后将 e 的忼设置为'input your text here'，程序运行时的初始忼便设置亿
+    Entry的属性可设置成只读：entry['state'] = 'readonly'
+        可以使用的属怿 normal/active/disabled,'readonly'丿 disabled
+    设置密码输入框：entry['show'] = '*' 也可尿*换成其他
+    验证输入的内容是否合法：使用validate来检验和限制输入的内宿
+Text多行输入＿
+    text_in.get("0.0",END) #获取承有内宿
+    height=2,width=1       #设置高为两行，宽丿1衿
+
+Checkbutton多?按钿
+    Checkbutton(root,text = 'Name').pack()      创建多?按钮，Name为按钮的倿
+    Checkbutton的操作：
+        与事件绑定：command = call              不管按钮状濁如何都会出发call函数的操使
+        改变按钮的忼：
+            def call():
+                v.set('Check Here')
+            v = StringVar()
+            Checkbutton(window,text = 'Check Here',textvariable = v,command = call).pack()
+            使用textvariable指定v变量组，并且在事件函数中改变v的忼即叿
+            注：上述皿 textvariable 使用方法丿 Button 的用法完全相同，使用此例是为了区别Checkbutton 的另外的丿个属怿 variable,此属性与 textvariable 不同，它是与这个控件本身绑定，Checkbutton 自己有忼：On 咿 Off 值，缺省状濿 On 丿1，Off 丿0
+            例：
+            def call():
+                print(v.get())
+            v = StringVar()
+            Checkbutton(window,variable = v,text = 'Check Here',command = call).pack()
+            此例为点击多选按钮时将输凿0房1，?中丿1，非选中丿0，也可手动设置其值，如下＿
+            Checkbutton(window,variable = v,
+                text = 'Check Here',
+                command = call,
+                onvalue = 'Yes',        选中时的倿
+                offvalue = 'No').pack() 非?中时的倿
+
+Radiobutton单?按钮：
+    Radiobutton(window,text = 'Radiobutton').pack()     创建值为Radiobutton的单选按钿
+    不指定变量的话，每个Radiobutton自称丿组只有一个?项?
+    创建Radiobutton组：
+        Val = IntVar()
+            rad1 = Radiobutton(win,text='One',variable=Val,value=1).pack()      text是按钮名，variable是所属组，value是第几个
+        rad2 = Radiobutton(win,text='Two',variable=Val,value=2).pack()
+        rad3 = Radiobutton(win,text='Three',variable=Val,value=3).pack()
+        三?一按钮，都属于Val绿
+        按钮属濧：
+            bg='背景艿'
+            activebackground='点击时的背景艿'
+
+Listbox列表框：
+    lb = Listbox(window)            创建listbox属于window窗口
+    for i in range(1,10):           循环遍历数字1-10
+        lb.insert(END,str(i*100))   使用lb.insert插入数据＿('弿夿','末尾')END为最前或朿吿
+    lb.pack()
+    Listbox的属性：selectmode = MULTIPLE    多?，依次点击可多逿
+                   selectmode = BROWSE      默认值，移动选择，没用，SINGLE与其相似，不支持移动选择，也没用
+                   selectmode = EXTENDED    支持Ctrl和Shift键来多?
+    Listbox的操作：lb.insert(END,item)      插入操作，?号前为位置索引，END为列表最弿始的位置，?号后的item为要插入的忿
+                   lb.delete(1,3)           删除操作，?号前为弿始索引，逗号后为结束索引，也可用END参数
+                   lb.selection_set(0,10)   默认选中操作，默认?中索引0到索弿10的项?
+                   lb.selection_clear(0,3)  取消选中操作，取消索弿0-3的项?
+                   lb.size()                Listbox中项的个数，直接print(lb.size())即可打印出个敿
+                   lb.get(3)                返回指定索引的项，此例为返回索引丿3的项，可返回多个项：(1,3)使用此方法返回索弿1-3的项?
+                   lb.cureselection()       返回当前承选的项的索引叿
+                   lb.selection_includes(8) 判断索引丿8的项是否被?中，返回Ture或False
+    Listbox与变量绑定：
+                   v = StringVar()                      声明v变量
+                   lb = Listbox(root,listvariable = v)  创建Listbox并且使用listvariable与v变量绑定
+                   for i in range(10):
+                       lb.insert(END,str(i*100))
+                   print(v.get())                       打印出v变量承绑定的列表中的所有项，输出的数据类型为字典tuple
+                   v.set(('1000','2000'))               改变v的忼就可以改变列表中的项，此操作所运行的结果就只剩1000咿2000了?
+    Listbox与事件绑定：
+                   def printList(event):
+                       print lb.get(lb.curselection)   此操作为返回承选项的索引号
+                   lb = Listbox(root)
+                   lb.bind('<Double-Button-1>',printList)绑定printList函数，当双击项时即可输出承选项皿
+                   for i in range(10):
+                       lb.insert(END,str(i*100))
+
+Scale拖动条：
+    sl = Scale(win )
+    sl.pack()
+    Scale的属性：
+        from_       设置朿大忿
+        to          设置朿小忿
+        resolution  设置步距倿
+        orient      设置方向，默认为垂直方向，HORIZONTAL为水平方吿
+        variable    绑定变量
+        command     绑定回调函数
+        label       设置标签，标签会在Scale的正上方显示
+    Scale的操作：
+        sl.set(50)  设置默认倿
+        sl.get()    打印当前倿
+
+Spinbox -- 有BUG，别甿
+
+Scrollbar滚动条：
+    Scrollbar(win).pack()
+    Scrollbar的操作：
+        sl.set(0.5,1) 即slider占整个Scrollbar的一卿 (slider为可拖动的那个条)
+    Scrollbar不会单独使用，以下为Scrollbar与Listbox绑定的例子：
+    win = Tk()
+    lb = Listbox(win)
+    sl = Scrollbar(win)
+    sl.pack(side=RIGHT,fill=Y)      #side指定位置为居右，fill为填满整个区埿(从最上到朿丿)
+    lb['yscrollcommand'] = sl.set   #指定Listbox的yscrollbar的回调函数为Scrollbar的set
+    for i in range(100):
+        lb.insert(END,str(i))
+    lb.pack(side=LEFT)
+    sl['command'] = lb.yview        #指定 Scrollbar 皿 command 的回调函数是 Listbar 皿 yview
+    win.mainloop()
+
+
+
+正则表达式：
+    \d 匹配任何十进制数[0-9]
+    \D 匹配任何非数字类[^0-9] ^代表取反?
+    \s 匹配任何恐濖字符[\t\n\r\f\v] 匹配空格
+    \w 匹配任何字母数字[^a-zA-Z0-9]
+
+Canvas 提供可以用来进行绘图皿 Container
+    item的属性：
+    （item即为Camvas图像＿
+    cv = Canvas(root,bg = 'white')                  #创建画布并指定画布背景颜艿
+        cv1 = cv.create_rectangle(10,10,110,110)    #创建丿个矩形，10,10为左上角坐标＿110,110为右下角坐标(樿,线,樿,线)
+        cv2 = cv.create_rectangle(fill='red')       #fill设置填充艿
+        cv3 = cv.create_rectangle(outline='red')    #outline设置边框颜色
+        cv4 = cv.create_rectangle(width=3)          #width设置边框宽度
+        cv5 = cv.create_rectangle(dash='2')         #dash设置边框为虚线
+        cv6 = cv.create_rectangle(stipple='gray12') #stipple设置填充，gray12为位囿
+
+    tags标签设置（tags的CURD操作）：
+        cv1 = cv.create_rectangle(10,10,110,110,tags='t1')  #设置标签为t1
+        cv.gettags('b2')                                    #查tags为b2的item
+        cv.gettags(2)                                       #查第二个item的tags,按照编写顺序排序
+        cv.gettags(cv1)                                     #查名为cv1的tags
+        cv.find_below(cv2)                                  #查找cv2的上丿个item，返回item编号
+        cv.find_above(cv2)                                  #查找cv2的下丿个item，返回item编号
+        cv.itemconfig(cv1,tags('t1','t2','t3'))             #设置多个标签，也可只设置丿个，会覆盖创建cv时设置的标签，即重新设置，且多个item可设置同丿个标筿
+                                                            #itemconfig便是重新设置item的属怿
+
+
+    tags和item的互调：
+        通过tags来访问item
+        cv1 = cv.create_rectangle(20,80,120,180,tags='t1')
+        cv2 = cv.create_rectangle(140,80,240,180,tags='t1')
+        cv3 = cv.create_rectangle(260,80,360,180,tags='t1')
+        for i in cv.find_withtag('t1'):
+            cv.itemconfig(i,fill='#FFC')
+        #此例为创建三个item，并且for循环遍历承有标签为t1的item并填充颜艿#FFC
+        #Canvas 使用亿 stack 的技术，新创建的 item 总是位于前一个创建的 item 之上，故调用above 时，
+        #它会查找 rt2上面皿 item 丿 rt3,敿 rt3中边框颜色设置为红色，同栿 add_below会查找下面的 item
+    item的操作：
+        cv.move(cv1,20,-10)                                 #20为从左向右移势20px＿-10为从下向上移势10px，正数均为从上向下和从左向右，负数则相反
+        cv.delete(cv1)                                      #删除名为cv1的item，有三种删除方法(名称/编号/tags)
+        cv.coords(cv1,(20,20,120,120))                      #重置cv1的坐标位罿
+不懂    cv.scale(cv1,0,0,1,2)                               #尿 y 坐标放大为原来的2位，x 坐标值不叿,scale 的参数为(self,xoffset,yoffset,xscale,yscale)
+    tags绑定event＿
+        def printHello():
+            print('Hello')
+        cv.tag_bind('a1','<Button-1>',printHello())
+失败    #绑定单击输出Hello
+
+    创建弧形＿
+        弧形样式：PIESLICE扇形；CHORD弓形；ARC弧形
+        使用style指定样式
+        使用start指定起始角度
+        使用extent指定角度偏移釿
+
+布局管理器：
+    pack：默认X轴方向填兿
+        fill=Y      #Y轴填兿
+        fill=BOTH   #XY双向填充
+        fill=X      #不填兿
+
+        expand=1            #禁止填充，与fill=X效果相似
+        side=LEFT/RIGHT     #设置位置
+        padx=10             #设置各组件间的间隿
+    place：使用绝对位置放置组仿
+        x=10
+        y=10    #指定绝对位置的x轴和y轴忿
+        relx=0.1
+        rely=1  #指定相对左边放置组件，范囿0-1
+        anchor= #指定位置：nw    n    ne
+                           w   center  e
+                           sw    s    se
+                #可同时使用这些属怿
+    grid：按照表格的方式放置组件
+        row=0   #放在第一衿
+        column=1#放在第二刿
+        window.columnconfigure(0,minsize=100)设置列的朿小宽度为100
+
+threading模块多线程：
+        def p1_act():
+            for i in range(100):
+                 p1["value"]=i
+                 time.sleep(0.001)
+        def p2_act():
+            for i in range(100):
+                 p2["value"]=i
+                 time.sleep(0.001)
+            p1_T = threading.Thread(target=p1_act)  #创建线程对象
+            p2_T = threading.Thread(target=p2_act)  #创建线程对象
+            p1_T.start()                            #启动线程
+            p2_T.start()                            #启动线程
+
+Socket＿
+    python3.5和Python2.7在套接字返回值解码上有区别?
+    先介绍一丿 python bytes和str两种类型转换的函数encode(),decode()
+
+    str通过encode()方法可以编码为指定的bytes
+    反过来，如果我们从网络或磁盘上读取了字节流，那么读到的数据就是bytes。要把bytes变为str，就霿要用decode()方法＿
+	
+Tkinter.ttk使用笔记
+	Style配置：
+	style = ttk.Style()
+    style.configure("C.TButton",background="#AFC",foreground="black")
+	例：
+		style = ttk.Style()
+        style.configure("C.TRadiobutton", background="#FFC", foreground="black")
+        red_group = StringVar()
+        red1 = ttk.Radiobutton(self.from_fra,text='google邮箱',style="C.TRadiobutton",variable=red_group,value=0)
+        red2 = ttk.Radiobutton(self.from_fra,text='163邮箱',style="C.TRadiobutton",variable=red_group,value=1)
+	
+	Combobox 下拉框
+	mBox	#弹出必须首先处理的消息框，其中包括提示例图、信息例图、错误例图等例子
+	ttk.Notebook(win)分页功能
+		例：
+			win = Tk()
+			win.geometry('300x300')
+			tabControl = ttk.Notebook(win)
+			tab1 = ttk.Frame(tabControl)
+			tabControl.add(tab1, text='第一页')
+			tab2 = ttk.Frame(tabControl)
+			tabControl.add(tab2, text='第二页')
+			tab3 = ttk.Frame(tabControl)
+			tabControl.add(tab3, text='第三页')
+			tabControl.pack(expand=1, fill="both")
+			win.mainloop()
+			
