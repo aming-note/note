@@ -1,0 +1,66 @@
+单线程服务器：socket
+    例：                                 
+		def listen():
+			addr = ('',5000)													#定义监听地址,第一个字段需留空，表示接受对本机任意IP的链接
+			sok = socket.socket(socket.AF_INET,socket.SOCK_STREAM)				#定义链接对象，socket.socket(协议家族,AF_INET为ipv4,AF_INET6为IPv6,类型)
+			sok.bind(addr)														#将链接对象与监听地址绑定
+			sok.listen(1024)													#开启监听，指定单次传输的数据大小
+			sok.settimeout(30)													#设置连接的超时时间
+			while True:															#开始循环，用于接受客户端的连接
+				try:															#捕捉异常
+					print ('waiting for connection......')						#输出等待信息
+					des,ip = sok.accept()										#将客户端发送的数据赋值给变量，类型为两个字段的列表，第一段为连接的协议信息，第二段为IP和端口，依次辅助给des和ip
+					print ('connection for',ip)									#输出客户端的ip和端口
+					while True:													#开始循环，用于从客户端接收数据
+						data = des.recv(1024).decode()							#接收从客户端发来的信息，进行unicode解码后复制给变量，
+						print(ip[0],"说:",data)									#输出客户端IP和发送来的信息
+						request_info = 'Success Get Your Digital'				#定义反馈的信息
+						des.send(data.encode())									#将反馈信息转码后再发送给客户端，用于给客户端确认是否发送成功
+				except Exception as e:											#捕捉异常
+					print(e)													#输出异常
+		listen()																#开始监听，用于接收客户端的连接请求和接收客户端发来的数据并处理改数据，完成单线程连接socket服务器。
+
+多线程服务器：socketserver
+	例：
+		import socketserver														#导入SocketServer模块
+		from socketserver import StreamRequestHandler as SRH					#导入SocketServer模块的StreamRequestHandler类的SRH算法
+		class MasterServer(SRH):												#定义一个类，继承SRH
+			print('wait for connection...')										#输出等待信息
+			def handle(self):													#重写handle算法
+				try:															#捕捉异常
+					print('connection form',self.client_address[0])				#输出客户端的连接信息self.client_address[0]为IP地址，[1]为源端口
+					while True:													#开始循环，用于从客户端接收数据
+						data = self.request.recv(1024)							#将客户端发送的数据赋值给变量
+						print(self.client_address[0], ':', data.decode())		#输出解码后的客户端所发来的数据
+						request_info = 'Success Get Your Digital'				#定义返回信息给客户端的信息
+						self.request.send(request_info.encode())				#返回转码后的信息
+				except:															#捕捉异常
+					print(self.client_address[0],'initiative close connect')	#输出客户端异常断开的信息
+					print('waiting for connection...')							#输出等待信息
+		if __name__ == '__main__':												#
+			addr = ('',6666)													#定义监听地址，('',6666)第一个字段为空代表监听所有地址，第二个字段为监听的端口
+			server = socketserver.ThreadingTCPServer(addr,MasterServer)			#指定socketserver的ThreadingTCPServer类，并将监听的端口和重写的handle传递给此类，并且将此操作赋值给变量
+			server.serve_forever()												#将此操作传递给server_forever进行监听处理，可此算法将接收一个或多个连接，完成多线程连接的socket服务器。
+
+通用客户端：socket
+	例:
+		conn = socket.socket(socket.AF_INET,socket.SOCK_STREAM)					#创建连接对象
+		ADDR = ('127.0.0.1',5000)												#定义连接对象的网络信息
+		conn.connect(ADDR)														#连接socket服务器
+		def send_recv():														#定义向服务器发送信息的函数
+			while True:															#开始循环，用于循环发送数据给服务器
+				data = input('>>>')												#提示信息
+				if not data:													#判断信息是否为空
+					continue													#如果所输信息为空，也就是只敲了个回车，则开始重新循环输入
+				elif data == 'exit':											#如果所输的数据为exit
+					break														#则退出循环，也就是退出程序
+				try:															#捕捉异常
+					conn.send(data.encode())									#发送转码后的数据给服务器
+					data = conn.recv(1024)										#从服务器接收数据
+					if data.decode() == 'Success Get Your Digital':				#判断从服务器接收来解码后的数据为Success Get Your Digital
+						print('发送成功')										#则输出成功的提示信息
+					else:														#否则
+						print('发送失败')										#输出失败的提示信息
+				except:															#捕捉异常
+					print('连接超时')											#输出超时提示
+		send_recv()																#开始循环，循环获取管理员输入的信息，以发送给服务器做处理

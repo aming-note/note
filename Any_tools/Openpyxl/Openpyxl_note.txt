@@ -1,0 +1,7 @@
+访问单元格数据
+    wb = load_workbook(filename=r'服务器整理11-11.xlsx')     #传递Excel文件给ex变量
+    wb.sheetnames                                            #获取所有sheet
+    wb.sheetnames[0]                                         #获取第一个表格的名字
+    wb[wb.sheetnames[0]]                                     #获取一个对象，为第一个表格
+    wb[wb.sheetnames[0]]["A3"]                               #获取第一个sheet坐标为A3的信息，不是表格内容
+    wb[wb.sheetnames[0]]["A3"].velue                         #获取第一个sheet坐标为A3的内容
