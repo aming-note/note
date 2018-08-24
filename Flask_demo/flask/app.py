@@ -1,7 +1,8 @@
+#coding:utf8
 from flask import Flask,render_template,request,redirect,url_for
 from wtforms import Form,TextField,validators
 from urllib.parse import unquote
-import re,datetime,os
+import re,time,os
 app = Flask(__name__)
 class LoginForm(Form):
     year = TextField("year",[validators.Required()])
@@ -10,7 +11,10 @@ class LoginForm(Form):
     hour = TextField("hour",[validators.Required()])
     min = TextField("min",[validators.Required()])
 def get_dig(n,y,r,s,f,filename):
-    file = open(filename,'r')
+    if filename == "today":
+        file = open("/usr/local/nginx/logs/bet.log",'r')
+    else:
+        file = open(filename,'r')
     code="%s-%s-%s_%s:%s"%(n,y,r,s,f)
     dig_list=[]
     for i in file.readlines():
@@ -42,22 +46,26 @@ def index():
         month = myForm.month.data
         day = myForm.day.data
         hour = myForm.hour.data
-        min = myForm.min.data
-        if "%s-%s-%s"%(year,month,day) == datetime.datetime.today():
-            data = get_dig(year, month, day, hour, min, '/usr/local/nginx/logs/bet.log')
-            return render_template('index.html', data=data, form=myForm)
+        fen = myForm.min.data
+        if "%s-%s-%s"%(year,month,day) == time.strftime("%Y-%m-%d"):
+            data = get_dig(year, month, day, hour, fen, 'today')
+            if data:
+                return render_template('index.html', data=data, form=myForm)
+            else:
+                return render_template('index.html', data="no", form=myForm)
         else:
             lst = os.listdir('/home/log_bak')
             for f in lst:
                 if not os.path.isdir(f):
-                    if re.findall(r'bet_%s-%s-%s_.....\.log'%(year,month,day),f):
-                        data = get_dig(year, month, day, hour, min, f)
-                        return render_template('index.html', data=data, form=myForm)
-                    else:
-                        return render_template('index.html', data="no", form=myForm)
-                else:
-                    return render_template('index.html', data="no", form=myForm)
+                    if re.findall(r'bet_%s-%s-%s_.....\.log'%(year,month,int(day)+1),f):
+                        file_name = "/home/log_bak/%s"%f
+                        data = get_dig(year, month, day, hour, fen, file_name)
+                        if data:
+                            return render_template('index.html', data=data, form=myForm)
+                        else:
+                            return render_template('index.html', data="no", form=myForm)
+            return render_template('index.html', data="no", form=myForm)
     return render_template('index.html',form=myForm)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=7788)
+    app.run(host='0.0.0.0',port=7788,debug=True)
