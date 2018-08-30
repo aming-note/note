@@ -125,14 +125,38 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 
+WebSocket：flask-SocketIO
+flask-SocketIO 为flask应用提供了一个客户端与服务器之间低延迟的双向通信。客户端应用可以用Javascript,C++,Java,Swift或者其它任意的编程语言的socketio官方库的客户端去和服务端创建一个永久的连接。
+
+#导入模块，socketIO用于绑定app，emit用于发送消息
+from flask_Socketio import SocketIO,emit
+#创建flask app，创建socket对象并且绑定APP
+app = Flask(__name__)
+socketio = SocketIO(app)
+#创建flask路由
+@app.route("/")
+def index():
+	return render_template("test.html")
+#创建操作函数，活动处理器，用于接收或发送消息，类似flask的路由
+@socketio.on('msg')		#此操作用于在js中发送数据至后台时需要指定的操作函数
+def message(msg):		#操作函数
+	print(msg)			#输出
+	emit('msg','info')	#发送数据至前端,此msg用于在js监听中调用此消息
+
+JS代码：
+var socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port);		#定义socket对象，用于操作socket连接
+socket.emit('msg','Nihao')	#发送消息，msg则为后台的活动处理器所指定的名称，和操作函数名以及操作函数的参数无关
+socket.on('msg',function(data){		#msg为后台emit中指定的第一个字段msg
+        alert(data)
+    });
 
 
-
-
-
-
-
-
-
-
-
+常用事件:
+服务端
+connect	当客户端与服务端连接成功后被触发
+message	当客户端使用send发送数据时被触发
+disconnect	当客户端与服务端失去连接时被触发,如关闭浏览器,主动断开,掉线等任何断开连接的情况.
+客户端
+connect	当客户端与服务端连接成功后被触发
+message	当服务端使用send发送数据时被触发
+disconnect	当客户端主动断开连接时被触发.

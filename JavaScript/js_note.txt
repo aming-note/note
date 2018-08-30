@@ -69,6 +69,13 @@ var txt = "mingge";					#声明变量并赋值，此变量是一个对象
 txt.age = 18;						#给对象添加age属性，明哥18岁，重新指定属性值则覆盖掉旧值
 txt.like = "game";					#明哥喜欢游戏
 									#访问方式：txt.like，txt.age
+也可使用函数的方式定义对象：
+var ne = new Object();
+ne.name = "mingge"
+
+字典方式定义对象：
+mingge={xingxiang:"gaodaweimeng",rongmao:"yingjunshuaiqi",zhishang:"manfen"}
+document.write(mingge.xingxiang + " 的mingge不止容貌 " + mingge.rongmao + " 而且智商 " + mingge.zhishang)
 
 运算符：
 基本和Python一致，只有一个比较特殊，=== 三个等于号，用于判断两个变量的值和类型是否都相同，返回布尔值
@@ -80,12 +87,9 @@ var a = "nihao"
 var custom = (a==="nihao")?"1":"2"	#判断a的类型和值是否为字符串的"nihao"，真则给变量custom赋值"1"，否则赋值"2"
 if判断
 格式：
-if (表达式)
-{操作;}
-elif
-{操作;}
-else
-{操作;}
+if (表达式) {操作;}
+elif (表达式) {操作;}
+else {操作;}
 
 switch(n)
 {
@@ -105,3 +109,36 @@ for (var i=0; i<num; i++)		#先定义一个变量用作起始编号(会在代码
 {document.write(i + "<br>");}
 
 for循环遍历，与Python一样
+
+DOM事件处理：
+鼠标单机事件：onclick="函数"		#判断浏览器是否启用cookie：navigator.cookieEnabled 返回布尔值
+DOM分配标签属性和标签事件：
+	document.getElementById('my').onclick=function();	#为标签绑定单机事件
+	document.getElementById('my').style="color:red";	#为标签更改style属性
+	document.getElementById('my').innerHTML="新文本";	#更改标签内文字。可用function fun(id){id.innerHTML="新闻本"}，然后在标签调用此函数时传入this参数，则不需要使用document再去查找id
+	onload和onunload									#在用户进入页面和离开页面时被处罚，用于检测访问者的浏览器和版本，写在body里
+	onchange											#当用户改变input输入的内容时调用(包括由空变为非空)，一般用于检测用户输入的内容，写在input中
+	onmouseover和onmouseout事件							#当用户的鼠标移至标签时和移出标签时出发的函数
+	onmousemove、onmouseenter、onmouseleave				#同上
+	onmousedown、onmouseup和onclick事件					#当用户使用鼠标点下时、放开时和单机完成时出发的函数
+	window.location.href="https://www.baidu.com./"		#跳转至指定页面
+js创建和删除标签：
+	<div id="dv">
+		<p id="p1">一点离愁两岸然</p>
+		<p id="p2">秋风依依秋水寒</p>
+	</div>
+	<button type="button" onclick="cli()">点击</button>
+	js创建函数：
+		function cli() {												#实现新建p标签
+			var cjdl = document.createElement("p");						#创建p标签
+			var new_dl = document.createTextNode("讲的啥几把玩意儿");	#创建文本
+			cjdl.appendChild(new_dl);									#将文本加入新建的p标签
+			var old = document.getElementById("dv");					#获取div标签
+			old.appendChild(cjdl);										#将新的p标签加入div标签内
+		}
+	js删除函数：
+		function cli() {
+			var dv = document.getElementById("dv");						#获取div标签
+			var p = document.getElementById("p2");						#获取p标签
+			dv.removeChild(p)											#在div标签中删除p元素，也就是删除id为p2的元素
+		}

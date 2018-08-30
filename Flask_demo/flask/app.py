@@ -2,7 +2,7 @@
 from flask import Flask,render_template,request,redirect,url_for
 from wtforms import Form,TextField,validators
 from urllib.parse import unquote
-import re,time,os
+import re,time,os,requests
 app = Flask(__name__)
 class LoginForm(Form):
     year = TextField("year",[validators.Required()])
@@ -12,9 +12,9 @@ class LoginForm(Form):
     min = TextField("min",[validators.Required()])
 def get_dig(n,y,r,s,f,filename):
     if filename == "today":
-        file = open("/usr/local/nginx/logs/bet.log",'r')
+        file = open("C:\\Users\\Admin\\Desktop\\bet.log",'r')
     else:
-        file = open(filename,'r')
+        file = open("C:\\Users\\Admin\\Desktop\\bak\\bet_2018-08-08_11_34.log",'r')
     code="%s-%s-%s_%s:%s"%(n,y,r,s,f)
     dig_list=[]
     for i in file.readlines():
@@ -34,6 +34,13 @@ def get_dig(n,y,r,s,f,filename):
                                 zhudan.insert(-1,zhuan)
                             else:
                                 zhudan.insert(-1,c)
+                    elif re.findall(r"^\"\d+.\d+.\d+.\d+",s) and not re.findall(r".*-.*_.*:",s):
+                        ip = re.split(r"\"",s)
+                        get = requests.get("https://ip.cn/index.php?ip=%s"%ip[1]).content.decode()
+                        res = re.findall(r".*所在地理位置.*",get)
+                        geo_sp = re.split(r"code",str(res))
+                        geo = re.split(r"[>,<]",geo_sp[3])
+                        zhudan.insert(-1,"%s:%s"%(s,geo[1]))
                     else:
                         zhudan.insert(-1,s)
                 dig_list.insert(-1,zhudan)
@@ -48,24 +55,26 @@ def index():
         hour = myForm.hour.data
         fen = myForm.min.data
         if "%s-%s-%s"%(year,month,day) == time.strftime("%Y-%m-%d"):
+            print(1)
             data = get_dig(year, month, day, hour, fen, 'today')
             if data:
                 return render_template('index.html', data=data, form=myForm)
             else:
                 return render_template('index.html', data="no", form=myForm)
         else:
-            lst = os.listdir('/home/log_bak')
+
+            lst = os.listdir('C:\\Users\\Admin\\Desktop\\bak')
             for f in lst:
                 if not os.path.isdir(f):
-                    if re.findall(r'bet_%s-%s-%s_.....\.log'%(year,month,int(day)+1),f):
-                        file_name = "/home/log_bak/%s"%f
+                    if re.findall(r'.*\.log',f):
+                        file_name = "C:\\Users\\Admin\\Desktop\\bak\\%s"%f
                         data = get_dig(year, month, day, hour, fen, file_name)
                         if data:
                             return render_template('index.html', data=data, form=myForm)
                         else:
                             return render_template('index.html', data="no", form=myForm)
             return render_template('index.html', data="no", form=myForm)
-    return render_template('index.html',form=myForm)
+    return render_template('index.html', form=myForm)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=7788,debug=True)
+    app.run(host='0.0.0.0',debug=True)

@@ -1,10 +1,7 @@
-function ret(txt) {
-    with (txt.name){
-        if (value=="")
-        {
-            alert("微笑");
-            focus();
-            return false;
-        }
-    }
+var socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port);
+function cli(){
+    socket.emit('msg',{'param':'value'});
+    socket.on('res',function(data){
+        alert(data)
+    });
 }

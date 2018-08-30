@@ -1,0 +1,62 @@
+body{
+    background: #816847;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+div{
+    cursor:pointer;
+}
+#dingbu {
+    border: 1px solid white;
+    height: 100px;
+    background-color: #333b49;
+    border-radius: 12px;
+}
+#dingbutu {
+    height: 60px;
+    width: 200px;
+    margin: 20px;
+    position: absolute;
+    left: 20px;
+}
+#mingcheng {
+    position: absolute;
+    left: 120px;
+    top: 30px;
+    color: #b24c8c;
+    font-size: 40px;
+}
+#logo {
+    width: 25%;
+    height: 100px;
+    float: left;
+    border-right: 1px solid white;
+}
+#button {
+    width: 50%;
+    height: 100px;
+    float: right;
+    border-right: 1px solid white;
+    position: absolute;
+    left: 25.3%;
+}
+#guanggao {
+    width: 24.3%;
+    height: 100px;
+    float: right;
+}
+#yzsq {
+    height: 30px;
+    width: 100px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    font-size: 20px;
+    text-align: center;
+    color: #a5c8e0;
+    border: 1px solid white;
+    border-radius: 15px;
+}
