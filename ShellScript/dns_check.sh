@@ -1,4 +1,5 @@
 #!/bin/bash
+#可使用column命令使其网格对齐，-t自动识别分隔符，-s指定分隔符
 
 file=./dns.list
 if [ -f ./err.list ];then
