@@ -7,6 +7,7 @@ root.destroy()                        # 锿毁根窗口
 root.withdraw()                       # 隐藏根窗叿
 root.deiconify()                      # 显示隐藏的根窗口
 root.attributes("-alpha",0.9)		  # 设置根窗口透明，1为不透明，0为完全透明，只有根窗口可以
+.place_forget						  # 设置隐藏组件
 root.geometry('%dx%d+%d+%d' % (700, 500, (root.winfo_screenwidth() - 700) / 2, (root.winfo_screenheight() - 700) / 2))
 									  # 设置窗口居中
 
@@ -60,7 +61,7 @@ Button按钮＿
     按钮也可使用Label的bitmap内置图和位置属濧来调整位置
 Entry文本输入＿
     width=20 设置文本框长庿
-    e = StringVar()
+    e = StringVar()	使用value=10可设置默认值
     entry = Entry(window,textvariable = e)
     e.set('Press input')
     entry.pack()
